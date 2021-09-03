@@ -1,20 +1,23 @@
 const timeLeft = document.querySelector('.display__time-left');
 const endTime = document.querySelector('.display__end-time');
+const timerButtons = document.querySelectorAll('.timer__button');
 
 let countdown;
 
 function timer(seconds) {
+  clearInterval(countdown); // clear any existing timers
   const now = (new Date()).getTime(); // Date.now() → mordern syntax to get current timestamp in miliseconds
   const then = now + 1000 * seconds; // As now is in miliseconds
-  clearInterval(countdown);
   displayTime(seconds);
   displayEndTime(then);
   countdown = setInterval(() => {
         const secondsLeft = Math.floor((then - Date.now()) / 1000) + 1;
-        if(secondsLeft <= 0){
-          clearInterval(countdown)
+        if(secondsLeft >= 1){          
+          displayTime(secondsLeft);
+        } else {
+          clearInterval(countdown);
+          displayTime(0);
         }
-        displayTime(secondsLeft);
   }, 1000)
 }
 
@@ -41,10 +44,20 @@ function displayTime(seconds) {
 
 function displayEndTime(then) {
   const end = new Date(then);
-  const hrs = end.getHours();
+  const hrs = end.getHours() > 12 ? twoDigit(end.getHours() - 12) : twoDigit(end.getHours());
   const mins = twoDigit(end.getMinutes());
-  const amOrPm = hrs > 12 ? 'pm' : 'am';
+  const amOrPm = end.getHours() >= 12 ? 'pm' : 'am';
 
-  const endTimeString = `${hrs % 12}:${mins}${amOrPm}`;
-  endTime.textContent = `Timer ends at ${endTimeString}`;
+  endTime.textContent = `Timer ends at ${hrs}:${mins}${amOrPm}`;
 }
+
+
+timerButtons.forEach(button => button.addEventListener('click', function() {
+  timer(this.dataset.time);
+}));
+
+document.customForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  timer(this.minutes.value * 60);
+  this.reset();
+});

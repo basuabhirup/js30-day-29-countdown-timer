@@ -65,8 +65,18 @@ body {
 .timer__button:hover,
 .timer__button:focus {
   background: rgba(0,0,0,0.2);
-  outline: 0;
+  outline: 1;
 }
+
+.stop-timer {
+  background-color: #800;
+}
+
+.stop-timer:hover,
+.stop-timer:focus {
+  background: #a00;
+}
+
 
 .display {
   flex: 1;
